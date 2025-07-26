@@ -1,0 +1,12 @@
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/bin/Debug/net8.0/GrpcClient.deps.json
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/bin/Debug/net8.0/GrpcClient.dll
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/bin/Debug/net8.0/GrpcClient.pdb
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.csproj.AssemblyReference.cache
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.GeneratedMSBuildEditorConfig.editorconfig
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.AssemblyInfoInputs.cache
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.AssemblyInfo.cs
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.csproj.CoreCompileInputs.cache
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.dll
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/refint/GrpcClient.dll
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/GrpcClient.pdb
+/Users/bibek/VIA/ReExam Sep3/Backend/GrpcClient/obj/Debug/net8.0/ref/GrpcClient.dll
