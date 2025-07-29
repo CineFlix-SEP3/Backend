@@ -1,20 +1,30 @@
+using System.Security.Cryptography;
+using System.Text;
 using GrpcClient;
-using GrpcToolkit.Proto;
 
 namespace API.Services;
 
 public class UserService(UserClient userClient)
 {
-    public async Task<UserResponse> CreateUserAsync(string username, string email, string hashedPassword, string userRole)
+    private static string HashPassword(string password)
+    {
+        using var sha256 = SHA256.Create();
+        var bytes = Encoding.UTF8.GetBytes(password);
+        var hash = sha256.ComputeHash(bytes);
+        return Convert.ToBase64String(hash);
+    }
+    public async Task<UserResponse> CreateUserAsync(string username, string email, string password, string userRole)
     {
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username is required.");
         if (string.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email is required.");
-        if (string.IsNullOrWhiteSpace(hashedPassword) || hashedPassword.Length < 6)
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             throw new ArgumentException("Password must be at least 6 characters.");
         if (string.IsNullOrWhiteSpace(userRole))
             throw new ArgumentException("User role is required.");
+
+        var hashedPassword = HashPassword(password);
 
         var request = new CreateUserRequest
         {
@@ -85,36 +95,28 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<UserResponse> UpdateUserAsync(int id, string username, string email, string hashedPassword, string userRole)
+    public async Task<UserResponse> UpdateUserAsync(int id, string? username, string? email, string? password, string? userRole)
     {
-        if (id <= 0)
-            throw new ArgumentException("Invalid user ID.");
-        if (string.IsNullOrWhiteSpace(username))
-            throw new ArgumentException("Username is required.");
-        if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email is required.");
-        if (string.IsNullOrWhiteSpace(hashedPassword) || hashedPassword.Length < 6)
-            throw new ArgumentException("Password must be at least 6 characters.");
-        if (string.IsNullOrWhiteSpace(userRole))
-            throw new ArgumentException("User role is required.");
+        var existingUser = await userClient.GetUserByIdAsync(new GetUserByIdRequest { Id = id });
+
+        if (existingUser == null)
+            throw new ArgumentException("User not found.");
+
+        var updatedUsername = username ?? existingUser.Username;
+        var updatedEmail = email ?? existingUser.Email;
+        var updatedPassword = password != null ? HashPassword(password) : existingUser.HashedPassword;
+        var updatedUserRole = userRole ?? existingUser.UserRole;
 
         var request = new UpdateUserRequest
         {
             Id = id,
-            Username = username,
-            Email = email,
-            HashedPassword = hashedPassword,
-            UserRole = userRole
+            Username = updatedUsername,
+            Email = updatedEmail,
+            HashedPassword = updatedPassword,
+            UserRole = updatedUserRole
         };
 
-        try
-        {
-            return await userClient.UpdateUserAsync(request);
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException($"Failed to update user with ID {id}.", ex);
-        }
+        return await userClient.UpdateUserAsync(request);
     }
 
     public async Task<DeleteUserResponse> DeleteUserAsync(int id)
