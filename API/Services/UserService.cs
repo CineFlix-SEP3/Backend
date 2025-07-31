@@ -19,7 +19,7 @@ public class UserService(UserClient userClient)
         if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             throw new ArgumentException("Password must be at least 6 characters.");
 
-        var userRole = email == "admin@gmail.com" ? "Admin" : "Auth";
+        var userRole = email == "admin@gmail.com" ? "Admin" : "User";
         var hashedPassword = HashPassword(password);
 
         var request = new CreateUserRequest

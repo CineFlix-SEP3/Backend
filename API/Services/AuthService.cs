@@ -49,7 +49,7 @@ public class AuthService(UserService userService, IConfiguration config)
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.UserRole.ToUpperInvariant()) // Normalize to upper case
+            new Claim(ClaimTypes.Role, user.UserRole.ToUpperInvariant()) 
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
