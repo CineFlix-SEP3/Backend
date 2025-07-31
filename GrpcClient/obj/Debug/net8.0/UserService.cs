@@ -44,8 +44,7 @@ public static partial class UserServiceReflection {
           "ZVVzZXISEi5VcGRhdGVVc2VyUmVxdWVzdBoNLlVzZXJSZXNwb25zZRI1CgpE",
           "ZWxldGVVc2VyEhIuRGVsZXRlVXNlclJlcXVlc3QaEy5EZWxldGVVc2VyUmVz",
           "cG9uc2USOAoLR2V0QWxsVXNlcnMSEy5HZXRBbGxVc2Vyc1JlcXVlc3QaFC5H",
-          "ZXRBbGxVc2Vyc1Jlc3BvbnNlQigKEnNlcDMuY2luZWZsaXguZ3JwY0IQVXNl",
-          "clNlcnZpY2VQcm90b1ABYgZwcm90bzM="));
+          "ZXRBbGxVc2Vyc1Jlc3BvbnNlYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
