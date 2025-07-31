@@ -8,12 +8,9 @@ public class UserService(UserClient userClient)
 {
     private static string HashPassword(string password)
     {
-        using var sha256 = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(password);
-        var hash = sha256.ComputeHash(bytes);
-        return Convert.ToBase64String(hash);
+        return BCrypt.Net.BCrypt.HashPassword(password);
     }
-    public async Task<UserResponse> CreateUserAsync(string username, string email, string password, string userRole)
+    public async Task<UserResponse> CreateUserAsync(string username, string email, string password)
     {
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username is required.");
@@ -21,9 +18,8 @@ public class UserService(UserClient userClient)
             throw new ArgumentException("Email is required.");
         if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             throw new ArgumentException("Password must be at least 6 characters.");
-        if (string.IsNullOrWhiteSpace(userRole))
-            throw new ArgumentException("User role is required.");
 
+        var userRole = email == "admin@gmail.com" ? "Admin" : "Auth";
         var hashedPassword = HashPassword(password);
 
         var request = new CreateUserRequest
@@ -40,7 +36,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException("Failed to create user.", ex);
+            throw new ApplicationException($"Failed to create user: {ex.Message}", ex);
         }
     }
 
@@ -57,7 +53,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get user by ID {id}.", ex);
+            throw new ApplicationException($"Failed to get user by ID {id}: {ex.Message}", ex);
         }
     }
 
@@ -74,7 +70,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get user by email {email}.", ex);
+            throw new ApplicationException($"Failed to get user by email '{email}': {ex.Message}", ex);
         }
     }
 
@@ -91,7 +87,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get user by username {username}.", ex);
+            throw new ApplicationException($"Failed to get user by username '{username}': {ex.Message}", ex);
         }
     }
 
@@ -100,7 +96,7 @@ public class UserService(UserClient userClient)
         var existingUser = await userClient.GetUserByIdAsync(new GetUserByIdRequest { Id = id });
 
         if (existingUser == null)
-            throw new ArgumentException("User not found.");
+            throw new ArgumentException("Auth not found.");
 
         var updatedUsername = username ?? existingUser.Username;
         var updatedEmail = email ?? existingUser.Email;
@@ -116,7 +112,14 @@ public class UserService(UserClient userClient)
             UserRole = updatedUserRole
         };
 
-        return await userClient.UpdateUserAsync(request);
+        try
+        {
+            return await userClient.UpdateUserAsync(request);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException($"Failed to update user with ID {id}: {ex.Message}", ex);
+        }
     }
 
     public async Task<DeleteUserResponse> DeleteUserAsync(int id)
@@ -132,7 +135,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to delete user with ID {id}.", ex);
+            throw new ApplicationException($"Failed to delete user with ID {id}: {ex.Message}", ex);
         }
     }
 
@@ -146,7 +149,7 @@ public class UserService(UserClient userClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException("Failed to get all users.", ex);
+            throw new ApplicationException($"Failed to get all users: {ex.Message}", ex);
         }
     }
 }

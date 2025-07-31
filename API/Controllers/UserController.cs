@@ -1,33 +1,15 @@
-
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController(Services.UserService userService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
-    {
-        try
-        {
-            var response = await userService.CreateUserAsync(
-                request.Username, request.Email, request.HashedPassword, request.UserRole);
-            return Ok(response);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-    }
-
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUserById(int id)
     {

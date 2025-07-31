@@ -1,3 +1,6 @@
+using API.DTOs;
+using API.DTOs.Movie;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -6,34 +9,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class MovieController(API.Services.MovieService movieService) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateMovieRequest request)
-    {
-        try
-        {
-            var result = await movieService.CreateMovieAsync(
-                request.Title,
-                request.Genres,
-                request.Directors,
-                request.Actors,
-                request.RunTime,
-                request.ReleaseDate,
-                request.Rating,
-                request.Description,
-                request.PosterUrl
-            );
-            return Ok(result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-    }
-
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -42,16 +18,11 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetMovieByIdAsync(id);
             return Ok(result);
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 
+    [AllowAnonymous]
     [HttpGet("title/{title}")]
     public async Task<IActionResult> GetByTitle(string title)
     {
@@ -60,16 +31,11 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetMovieByTitleAsync(title);
             return Ok(result);
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -78,59 +44,10 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetAllMoviesAsync();
             return Ok(result);
         }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateMovieRequest request)
-    {
-        try
-        {
-            var result = await movieService.UpdateMovieAsync(
-                id,
-                request.Title,
-                request.Genres,
-                request.Directors,
-                request.Actors,
-                request.RunTime,
-                request.ReleaseDate,
-                request.Rating,
-                request.Description,
-                request.PosterUrl
-            );
-            return Ok(result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-    }
-
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        try
-        {
-            var result = await movieService.DeleteMovieAsync(id);
-            return Ok(result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-    }
-
+    [AllowAnonymous]
     [HttpGet("genre/{genre}")]
     public async Task<IActionResult> GetByGenre(string genre)
     {
@@ -139,16 +56,11 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetMoviesByGenreAsync(genre);
             return Ok(result);
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 
+    [AllowAnonymous]
     [HttpGet("director/{director}")]
     public async Task<IActionResult> GetByDirector(string director)
     {
@@ -157,16 +69,11 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetMoviesByDirectorAsync(director);
             return Ok(result);
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (ApplicationException ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 
+    [AllowAnonymous]
     [HttpGet("actor/{actor}")]
     public async Task<IActionResult> GetByActor(string actor)
     {
@@ -175,13 +82,69 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
             var result = await movieService.GetMoviesByActorAsync(actor);
             return Ok(result);
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
+    }
+
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost]
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateMovieDto dto)
+    {
+        try
         {
-            return BadRequest(ex.Message);
+            var result = await movieService.CreateMovieAsync(
+                dto.Title,
+                dto.Genres,
+                dto.Directors,
+                dto.Actors,
+                dto.RunTime,
+                dto.ReleaseDate,
+                dto.Rating,
+                dto.Description,
+                dto.PosterUrl
+            );
+            return Ok(result);
         }
-        catch (ApplicationException ex)
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
+    }
+
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateMovieDto dto)
+    {
+        try
         {
-            return StatusCode(500, ex.Message);
+            var result = await movieService.UpdateMovieAsync(
+                id,
+                dto.Title,
+                dto.Genres,
+                dto.Directors,
+                dto.Actors,
+                dto.RunTime,
+                dto.ReleaseDate,
+                dto.Rating,
+                dto.Description,
+                dto.PosterUrl
+            );
+            return Ok(result);
         }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
+    }
+
+    [Authorize(Roles = "ADMIN")]
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            var result = await movieService.DeleteMovieAsync(id);
+            return Ok(result);
+        }
+        catch (ArgumentException ex) { return BadRequest(ex.Message); }
+        catch (ApplicationException ex) { return StatusCode(500, ex.Message); }
     }
 }

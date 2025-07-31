@@ -53,7 +53,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException("Failed to create movie.", ex);
+            throw new ApplicationException($"Failed to create movie: {ex.Message}", ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get movie by ID {id}.", ex);
+            throw new ApplicationException($"Failed to get movie by ID {id}: {ex.Message}", ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get movie by title {title}.", ex);
+            throw new ApplicationException($"Failed to get movie by title '{title}': {ex.Message}", ex);
         }
     }
 
@@ -101,7 +101,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException("Failed to get all movies.", ex);
+            throw new ApplicationException($"Failed to get all movies: {ex.Message}", ex);
         }
     }
 
@@ -141,7 +141,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to update movie with ID {id}.", ex);
+            throw new ApplicationException($"Failed to update movie with ID {id}: {ex.Message}", ex);
         }
     }
 
@@ -158,7 +158,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to delete movie with ID {id}.", ex);
+            throw new ApplicationException($"Failed to delete movie with ID {id}: {ex.Message}", ex);
         }
     }
 
@@ -175,7 +175,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get movies by genre {genre}.", ex);
+            throw new ApplicationException($"Failed to get movies by genre '{genre}': {ex.Message}", ex);
         }
     }
 
@@ -192,7 +192,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get movies by director {director}.", ex);
+            throw new ApplicationException($"Failed to get movies by director '{director}': {ex.Message}", ex);
         }
     }
 
@@ -209,7 +209,7 @@ public class MovieService(MovieClient movieClient)
         }
         catch (Exception ex)
         {
-            throw new ApplicationException($"Failed to get movies by actor {actor}.", ex);
+            throw new ApplicationException($"Failed to get movies by actor '{actor}': {ex.Message}", ex);
         }
     }
 }
