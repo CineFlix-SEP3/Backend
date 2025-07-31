@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Google.Protobuf" Version="3.32.0-rc1"/>
+        <PackageReference Include="Google.Protobuf" Version="3.24.4"/>
         <PackageReference Include="Grpc.Net.Client" Version="2.71.0"/>
         <PackageReference Include="Grpc.Tools" Version="2.72.0">
             <PrivateAssets>all</PrivateAssets>
@@ -17,10 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\..\..\..\.nuget\packages\grpctoolkit\6.0.1\contentFiles\any\net6.0\BaseProto\Proto\UserService.proto" Link="BaseProto\Proto\UserService.proto" GrpcServices="Client"/>
+        <Protobuf Include="Protos/MovieService.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos/UserService.proto" GrpcServices="Client" />
     </ItemGroup>
-    <ItemGroup>
-        <Protobuf Include="..\..\..\..\.nuget\packages\grpctoolkit\6.0.1\contentFiles\any\net6.0\BaseProto\Proto\MovieService.proto" Link="BaseProto\Proto\MovieService.proto" GrpcServices="Client"/>
-    </ItemGroup>
+
 
 </Project>

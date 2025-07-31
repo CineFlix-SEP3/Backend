@@ -1,9 +1,4 @@
-using API.Services;
 using GrpcClient;
-using GrpcToolkit.Proto;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<UserClient>(_ => new UserClient("http://localhost:9090"));
 builder.Services.AddScoped<API.Services.UserService>();
 
+// Register gRPC client and MovieService for DI
+builder.Services.AddScoped<MovieClient>(_ => new MovieClient("http://localhost:9090"));
+builder.Services.AddScoped<API.Services.MovieService>();
 
 // Add controllers and Swagger
 builder.Services.AddControllers();
