@@ -1,2 +1,0 @@
-obj/Debug/net8.0/DbService.cs \
-obj/Debug/net8.0/DbServiceGrpc.cs: ../../../../.nuget/packages/grpctoolkit/6.0.1/contentFiles/any/net6.0/BaseProto/Proto/DbService.proto
