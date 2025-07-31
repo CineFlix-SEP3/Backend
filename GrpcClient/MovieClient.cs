@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace GrpcClient;
 
 public class MovieClient : BaseGrpcClient

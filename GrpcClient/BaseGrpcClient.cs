@@ -1,3 +1,4 @@
+using System;
 using Grpc.Net.Client;
 
 namespace GrpcClient;
