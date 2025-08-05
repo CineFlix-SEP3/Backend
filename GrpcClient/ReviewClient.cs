@@ -25,4 +25,6 @@ public class ReviewClient : BaseGrpcClient
 
     public async Task<DeleteReviewResponse> DeleteReviewAsync(DeleteReviewRequest request)
         => await _client.DeleteReviewAsync(request);
+    public async Task<GetReviewByIdResponse> GetReviewByIdAsync(GetReviewByIdRequest request)
+        => await _client.GetReviewByIdAsync(request);
 }

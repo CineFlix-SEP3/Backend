@@ -3,6 +3,7 @@ using GrpcClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ builder.Services.AddScoped<API.Services.ReviewService>();
 builder.Services.AddSingleton(new UserClient("http://localhost:9090"));
 builder.Services.AddSingleton(new MovieClient("http://localhost:9090"));
 builder.Services.AddSingleton(new ReviewClient("http://localhost:9090"));
+
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+});
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -66,6 +72,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseDeveloperExceptionPage();
+app.UseHttpLogging();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

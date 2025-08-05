@@ -124,4 +124,27 @@ public class ReviewService(ReviewClient reviewClient)
             throw new ApplicationException($"Failed to delete review with ID {id}: {ex.Message}", ex);
         }
     }
+    public async Task<ReviewDto?> GetReviewByIdAsync(int id)
+    {
+        if (id <= 0)
+            throw new ArgumentException("Invalid review ID.");
+
+        try
+        {
+            var request = new GetReviewByIdRequest { Id = id };
+            var response = await reviewClient.GetReviewByIdAsync(request);
+            return response != null ? new ReviewDto
+            {
+                Id = response.Id,
+                MovieId = response.MovieId,
+                UserId = response.UserId,
+                Text = response.Text,
+                Rating = response.Rating
+            } : null;
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException($"Failed to get review with ID {id}: {ex.Message}", ex);
+        }
+    }
 }
