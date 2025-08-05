@@ -124,8 +124,11 @@ public class UserService(UserClient userClient)
 
         var updatedUsername = username ?? existingUser.Username;
         var updatedEmail = email ?? existingUser.Email;
-        var updatedPassword = password != null ? HashPassword(password) : existingUser.HashedPassword;
         var updatedUserRole = userRole ?? existingUser.UserRole;
+
+        var updatedPassword = !string.IsNullOrWhiteSpace(password)
+            ? HashPassword(password)
+            : existingUser.HashedPassword;
 
         var request = new UpdateUserRequest
         {
