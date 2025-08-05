@@ -8,7 +8,6 @@ public class UpdateMovieDto
     public IEnumerable<string>? Actors { get; set; }
     public int? RunTime { get; set; }
     public string? ReleaseDate { get; set; }
-    public double? Rating { get; set; }
     public string? Description { get; set; }
     public string? PosterUrl { get; set; }
 }

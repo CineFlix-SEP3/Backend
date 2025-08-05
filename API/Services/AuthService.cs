@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using API.DTOs;
 using API.DTOs.Auth;
 using Microsoft.IdentityModel.Tokens;
 
@@ -12,10 +11,11 @@ public class AuthService(UserService userService, IConfiguration config)
     public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginRequest)
     {
         var user = await userService.GetUserByEmailAsync(loginRequest.Email);
-        if (!VerifyPassword(loginRequest.Password, user.HashedPassword))
+        var userGrpc = await userService.GetUserByEmailGrpcAsync(loginRequest.Email);
+        if (!VerifyPassword(loginRequest.Password, userGrpc.HashedPassword))
             return null;
 
-        var token = await GenerateTokenAsync(user);
+        var token = await GenerateTokenAsync(userGrpc);
         return new LoginResponseDto
         {
             Token = token,
@@ -25,7 +25,7 @@ public class AuthService(UserService userService, IConfiguration config)
 
     public async Task<UserDto> RegisterAsync(CreateUserDto createUserDto)
     {
-        UserResponse? existing = null;
+        UserDto? existing = null;
         try
         {
             existing = await userService.GetUserByUsernameAsync(createUserDto.Username);
@@ -40,7 +40,7 @@ public class AuthService(UserService userService, IConfiguration config)
         var user = await userService.CreateUserAsync(
             createUserDto.Username, createUserDto.Email, createUserDto.Password);
 
-        return new UserDto(user.Id, user.Username, user.Email, user.UserRole);
+        return user;
     }
 
     private Task<string> GenerateTokenAsync(UserResponse user)
@@ -49,7 +49,7 @@ public class AuthService(UserService userService, IConfiguration config)
         {
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.UserRole.ToUpperInvariant()) 
+            new Claim(ClaimTypes.Role, user.UserRole.ToUpperInvariant())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));

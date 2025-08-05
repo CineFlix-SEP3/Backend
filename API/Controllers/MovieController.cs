@@ -88,8 +88,6 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
 
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateMovieDto dto)
     {
         try
@@ -101,7 +99,6 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
                 dto.Actors,
                 dto.RunTime,
                 dto.ReleaseDate,
-                dto.Rating,
                 dto.Description,
                 dto.PosterUrl
             );
@@ -125,7 +122,6 @@ public class MovieController(API.Services.MovieService movieService) : Controlle
                 dto.Actors,
                 dto.RunTime,
                 dto.ReleaseDate,
-                dto.Rating,
                 dto.Description,
                 dto.PosterUrl
             );

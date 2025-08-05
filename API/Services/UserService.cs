@@ -1,5 +1,4 @@
-using System.Security.Cryptography;
-using System.Text;
+using API.DTOs.Auth;
 using GrpcClient;
 
 namespace API.Services;
@@ -10,7 +9,19 @@ public class UserService(UserClient userClient)
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
-    public async Task<UserResponse> CreateUserAsync(string username, string email, string password)
+
+    private static UserDto MapToDto(UserResponse user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+            UserRole = user.UserRole
+        };
+    }
+
+    public async Task<UserDto> CreateUserAsync(string username, string email, string password)
     {
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username is required.");
@@ -32,7 +43,8 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.CreateUserAsync(request);
+            var user = await userClient.CreateUserAsync(request);
+            return MapToDto(user);
         }
         catch (Exception ex)
         {
@@ -40,7 +52,7 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<UserResponse> GetUserByIdAsync(int id)
+    public async Task<UserDto> GetUserByIdAsync(int id)
     {
         if (id <= 0)
             throw new ArgumentException("Invalid user ID.");
@@ -49,7 +61,8 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.GetUserByIdAsync(request);
+            var user = await userClient.GetUserByIdAsync(request);
+            return MapToDto(user);
         }
         catch (Exception ex)
         {
@@ -57,7 +70,7 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<UserResponse> GetUserByEmailAsync(string email)
+    public async Task<UserDto> GetUserByEmailAsync(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email is required.");
@@ -66,15 +79,25 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.GetUserByEmailAsync(request);
+            var user = await userClient.GetUserByEmailAsync(request);
+            return MapToDto(user);
         }
         catch (Exception ex)
         {
             throw new ApplicationException($"Failed to get user by email '{email}': {ex.Message}", ex);
         }
     }
+    
+    public async Task<UserResponse> GetUserByEmailGrpcAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentException("Email is required.");
 
-    public async Task<UserResponse> GetUserByUsernameAsync(string username)
+        var request = new GetUserByEmailRequest { Email = email };
+        return await userClient.GetUserByEmailAsync(request);
+    }
+
+    public async Task<UserDto> GetUserByUsernameAsync(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
             throw new ArgumentException("Username is required.");
@@ -83,7 +106,8 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.GetUserByUsernameAsync(request);
+            var user = await userClient.GetUserByUsernameAsync(request);
+            return MapToDto(user);
         }
         catch (Exception ex)
         {
@@ -91,7 +115,7 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<UserResponse> UpdateUserAsync(int id, string? username, string? email, string? password, string? userRole)
+    public async Task<UserDto> UpdateUserAsync(int id, string? username, string? email, string? password, string? userRole)
     {
         var existingUser = await userClient.GetUserByIdAsync(new GetUserByIdRequest { Id = id });
 
@@ -114,7 +138,8 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.UpdateUserAsync(request);
+            var user = await userClient.UpdateUserAsync(request);
+            return MapToDto(user);
         }
         catch (Exception ex)
         {
@@ -122,7 +147,7 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<DeleteUserResponse> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
         if (id <= 0)
             throw new ArgumentException("Invalid user ID.");
@@ -131,7 +156,8 @@ public class UserService(UserClient userClient)
 
         try
         {
-            return await userClient.DeleteUserAsync(request);
+            var response = await userClient.DeleteUserAsync(request);
+            return response.Success;
         }
         catch (Exception ex)
         {
@@ -139,13 +165,14 @@ public class UserService(UserClient userClient)
         }
     }
 
-    public async Task<GetAllUsersResponse> GetAllUsersAsync()
+    public async Task<List<UserDto>> GetAllUsersAsync()
     {
         var request = new GetAllUsersRequest();
 
         try
         {
-            return await userClient.GetAllUsersAsync(request);
+            var response = await userClient.GetAllUsersAsync(request);
+            return response.Users.Select(MapToDto).ToList();
         }
         catch (Exception ex)
         {
