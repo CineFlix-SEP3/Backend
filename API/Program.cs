@@ -9,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<API.Services.UserService>();
 builder.Services.AddScoped<API.Services.MovieService>();
 builder.Services.AddScoped<API.Services.AuthService>();
+builder.Services.AddScoped<API.Services.ReviewService>();
 builder.Services.AddSingleton(new UserClient("http://localhost:9090"));
 builder.Services.AddSingleton(new MovieClient("http://localhost:9090"));
+builder.Services.AddSingleton(new ReviewClient("http://localhost:9090"));
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
