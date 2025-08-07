@@ -11,9 +11,12 @@ builder.Services.AddScoped<API.Services.UserService>();
 builder.Services.AddScoped<API.Services.MovieService>();
 builder.Services.AddScoped<API.Services.AuthService>();
 builder.Services.AddScoped<API.Services.ReviewService>();
+builder.Services.AddScoped<API.Services.UserLibraryService>();
 builder.Services.AddSingleton(new UserClient("http://localhost:9090"));
 builder.Services.AddSingleton(new MovieClient("http://localhost:9090"));
 builder.Services.AddSingleton(new ReviewClient("http://localhost:9090"));
+builder.Services.AddSingleton(new UserLibraryClient("http://localhost:9090"));
+
 
 builder.Services.AddHttpLogging(logging =>
 {

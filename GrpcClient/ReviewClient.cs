@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace GrpcClient;
 
 public class ReviewClient : BaseGrpcClient
